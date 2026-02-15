@@ -9,3 +9,10 @@
   - Individually set an interest rate for each user based on some global interest rate of the protocol at the time the user deposits into the vault.
   - This global interest rate can only decrease to incentivize/reward early adopters.
   - This feature increases token adoption
+
+  ### 🛠️Dependencies
+  OpenZeppelin
+  ```
+   forge install openzeppelin/openzeppelin-contracts@v5.1.0 
+  ```
+  
