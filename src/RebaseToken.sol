@@ -56,6 +56,45 @@ contract RebaseToken is ERC20{
     sUserLastUpdatedTimeStamp[_user] = block.timestamp;
   }
 
+  function transfer(address _recepient, uint256 _amount) public override returns (bool) {
+    _mintAccruedInterest(msg.sender);
+    _mintAccruedInterest(_recepient);
+
+    if (_amount == type(uint256).max) {
+      _amount = balanceOf(msg.sender);
+    }
+
+    if (balanceOf(_recepient) == 0) {
+      sUserInterateRate[_recepient] = sUserInterateRate[msg.sender];
+    }
+
+    return super.transfer(_recepient, _amount);
+  }
+
+  function transferFrom(address _sender, address _recepient, uint256 _amount) public override returns (bool) {
+    _mintAccruedInterest(_sender);
+    _mintAccruedInterest(_recepient);
+
+    if (_amount == type(uint256).max) {
+      _amount = balanceOf(_sender);
+    }
+
+    if (balanceOf(_recepient) == 0) {
+      sUserInterateRate[_recepient] = sUserInterateRate[_sender];
+    }
+
+    return super.transfer(_recepient, _amount);
+  }
+
+  function burn(address _from, uint256 _amount) external {
+    if (_amount == type(uint256).max) {
+      _amount = balanceOf(_from);
+    }
+
+    _mintAccruedInterest(_from);
+    _burn(_from, _amount);
+  }
+
   // Getters
   function balanceOf(address _user) public view override returns (uint256) {
     // 1. Get current Principle balance and multiply by interest rate
@@ -77,5 +116,13 @@ contract RebaseToken is ERC20{
    */
   function getInterestRateOfUser(address _user) external view returns (uint256) {
     return sUserInterateRate[_user];
+  }
+
+  function getPrincipleBalanceOf(address _user) external view returns (uint256) {
+    return super.balanceOf(_user);
+  }
+
+  function getInterestRate() external view returns (uint256) {
+    return sInterestRate;
   }
 }
