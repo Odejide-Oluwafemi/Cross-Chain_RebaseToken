@@ -108,13 +108,13 @@ contract RebaseToken is ERC20, Ownable, AccessControl{
     return (super.balanceOf(_user) * _calculateUserAccumulatedInterestRate(_user)) / PRECISION_FACTOR;
   }
 
-  function _calculateUserAccumulatedInterestRate(address _user) internal view returns (uint256 linear_interest) {
+  function _calculateUserAccumulatedInterestRate(address _user) internal view returns (uint256 linearInterest) {
     // linear_interest = principal_amount (1 + (user_interest_rate * time_elasped))
     // E.g. If deposit = 10, and user_interest_rate = 0.5 tokens per second, and time_elasped = 2 seconds
     // 10 (1 + (0.5 * 2))
     // Therefore, linear_interest = 10(2) = 20
     uint256 timeElasped = block.timestamp - sUserLastUpdatedTimeStamp[_user];
-    linear_interest = PRECISION_FACTOR + (sUserInterateRate[_user] * timeElasped);
+    linearInterest = PRECISION_FACTOR + (sUserInterateRate[_user] * timeElasped);
   }
 
   /**
